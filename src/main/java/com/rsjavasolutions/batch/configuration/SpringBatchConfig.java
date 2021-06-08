@@ -13,16 +13,12 @@ import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.file.FlatFileItemReader;
-import org.springframework.batch.item.file.LineMapper;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
 import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
-import org.springframework.batch.item.file.mapping.DefaultLineMapper;
-import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 
 @Configuration
 @EnableBatchProcessing
@@ -54,7 +50,7 @@ public class SpringBatchConfig {
 
     @Bean
     public FlatFileItemReader reader() {
-        return  new FlatFileItemReaderBuilder()
+        return new FlatFileItemReaderBuilder()
                 .name("Car-Reader")
                 .resource(new ClassPathResource(fileInput))
                 .delimited()

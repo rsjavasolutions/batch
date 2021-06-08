@@ -17,7 +17,7 @@ public class DBWriter implements ItemWriter<CarEntity> {
     private final CarRepository carRepository;
 
     @Override
-    public void write(List<? extends CarEntity> cars) throws Exception {
+    public void write(List<? extends CarEntity> cars) {
         log.info("Data Saved for Cars {}", cars);
         carRepository.saveAll(cars);
     }
