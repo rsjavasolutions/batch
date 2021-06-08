@@ -26,7 +26,11 @@ import org.springframework.core.io.Resource;
 
 @Configuration
 @EnableBatchProcessing
+@RequiredArgsConstructor
 public class SpringBatchConfig {
+
+    @Value("${file.input}")
+    private String fileInput;
 
     @Bean
     public Job job(JobBuilderFactory jobBuilderFactory,
@@ -49,31 +53,16 @@ public class SpringBatchConfig {
     }
 
     @Bean
-    public FlatFileItemReader<CarRequest> fileItemReader() {
-
-        return new FlatFileItemReaderBuilder<CarRequest>()
-                .name("CSV-Reader")
-                .resource(new ClassPathResource("cars.csv"))
-                .lineMapper(lineMapper())
+    public FlatFileItemReader reader() {
+        return  new FlatFileItemReaderBuilder()
+                .name("Car-Reader")
+                .resource(new ClassPathResource(fileInput))
+                .delimited()
+                .names("brand", "model", "bodyType", "year")
+                .fieldSetMapper(new BeanWrapperFieldSetMapper() {{
+                    setTargetType(CarRequest.class);
+                }})
                 .linesToSkip(1)
                 .build();
-    }
-
-    @Bean
-    public LineMapper<CarRequest> lineMapper() {
-        DefaultLineMapper<CarRequest> defaultLineMapper = new DefaultLineMapper<>();
-        DelimitedLineTokenizer lineTokenizer = new DelimitedLineTokenizer();
-
-        lineTokenizer.setDelimiter(",");
-        lineTokenizer.setStrict(false);
-        lineTokenizer.setNames("brand", "model", "bodyType", "year");
-
-        BeanWrapperFieldSetMapper<CarRequest> fieldSetMapper = new BeanWrapperFieldSetMapper<>();
-        fieldSetMapper.setTargetType(CarRequest.class);
-
-        defaultLineMapper.setLineTokenizer(lineTokenizer);
-        defaultLineMapper.setFieldSetMapper(fieldSetMapper);
-
-        return defaultLineMapper;
     }
 }
